@@ -1,0 +1,33 @@
+name: software_development
+description: A new Flutter project.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.2.2 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^0.1.2
+  # cloud_firestore: ^0.12.11
+  # firebase_core: ^0.4.0+8
+  # provider: ^3.0.0+1
+  # get_it: ^1.0.3+2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+
+  fonts:
+    - family: JosefinSans
+      fonts:
+        - asset: fonts/JosefinSans-Regular.ttf
+        - asset: fonts/JosefinSans-SemiBold.ttf
+          weight: 400
+        - asset: fonts/JosefinSans-Bold.ttf
+          weight: 700
