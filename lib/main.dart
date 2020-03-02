@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:software_development/views/utils/route_generator.dart';
+import 'package:software_development/utils/route_generator.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(fontFamily: 'JosefinSans'),
-      initialRoute: '/settings',
+      initialRoute: '/signup',
       onGenerateRoute: RouteGenerator.generateRoute,
       debugShowCheckedModeBanner: false,
     );

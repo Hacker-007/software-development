@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:software_development/views/utils/widget_utils.dart';
+import 'package:software_development/utils/widget_utils.dart';
 
 class LoginPage extends StatelessWidget {
   
@@ -24,10 +24,17 @@ class LoginPage extends StatelessWidget {
               validatorMap: { 
                 'Email Address': (String email) => RegExp(r'\S+@\w+\.\w+').hasMatch(email) ? null : 'Please Enter A Valid Email.'
               },
+              // onPressed: () => authService.googleSignIn(),
               path: '/',
               useDotsOnLast: true,
             ),
             WidgetUtils.createLineSeparator(),
+            // WidgetUtils.createButton(
+            //   context,
+            //   'Sign Out',
+            //   colors['Dark Gray'],
+            //   onPressed: () => authService.signout(),
+            // ),
           ]
         ),
       ),

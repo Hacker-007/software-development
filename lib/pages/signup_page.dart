@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:software_development/views/utils/widget_utils.dart';
+import 'package:software_development/services/auth.dart';
+import 'package:software_development/services/crud.dart';
+import 'package:software_development/utils/widget_utils.dart';
 
 class SignUpPage extends StatelessWidget {
   
@@ -21,8 +23,10 @@ class SignUpPage extends StatelessWidget {
             WidgetUtils.createForm(
               ['Full Name', 'Email Address', 'Password'], 
               'Sign Up',
-              path: '/account',
+              path: '/',
               useDotsOnLast: true,
+              onPressed: authService.googleSignIn,
+              indexes: [],
             ),
             WidgetUtils.createLineSeparator(),
           ]

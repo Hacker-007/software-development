@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:software_development/views/utils/colors.dart';
+import 'package:software_development/utils/colors.dart';
 
 class WidgetUtils {
 
@@ -8,7 +8,11 @@ class WidgetUtils {
     return _CustomSwitch(title);
   }
 
-  static Future createYesOrNoDialog(BuildContext context, String title, String caption, { Function onConfirmation }) {
+  static Future createYesOrNoDialog(BuildContext context,
+                                    String title, 
+                                    String caption, 
+                                    { Function onConfirmation }
+                                   ) {
     return showDialog(
       context: context,
       builder: (_) => new AlertDialog(
@@ -28,18 +32,37 @@ class WidgetUtils {
     );
   }
 
-  static Widget createForm(List<String> textFieldNames, String nameOfButton, { Map<String, Function> validatorMap, bool useDotsOnLast = false, Color color, path = '/' }) {
+  static Widget createForm(List<String> textFieldNames, 
+                           String nameOfButton,
+                           { 
+                             Map<String, Function> validatorMap, 
+                             Function onPressed,
+                             List<int> indexes,
+                             bool useDotsOnLast = false, 
+                             Color color, 
+                             path = '/'
+                           }
+                          ) {
     return _CustomForm(
       textFieldNames,
-      validatorMap != null ? validatorMap : new Map<String, Function>(),
+      validatorMap != null ? validatorMap : Map<String, Function>(),
       nameOfButton,
+      onPressed: onPressed != null ? onPressed : (map) => Future.value(null),
+      indexes: indexes != null ? indexes : List(),
       useDotsOnLast: useDotsOnLast, 
       color: color == null ? colors['Dark Gray'] : color, 
       path: path
     );
   }
 
-  static Widget createTextField(String caption, { bool isLast = false, bool showDots = false, String Function(String) validator }) {
+  static Widget createTextField(String caption, 
+                                { 
+                                  bool isLast = false, 
+                                  bool showDots = false, 
+                                  TextEditingController controller, 
+                                  String Function(String) validator 
+                                }
+                               ) {
     return Padding(
       padding: isLast ? const EdgeInsets.symmetric(vertical: 15.0) : const EdgeInsets.only(top: 15.0),
       child: SizedBox(
@@ -59,12 +82,20 @@ class WidgetUtils {
           style: TextStyle(fontSize: 20.0),
           validator: validator,
           obscureText: showDots,
+          controller: controller,
         ),
       ),
     );
   }
 
-  static Widget createButton(BuildContext context, String text, Color color, { String path, Function onPressed }) {
+  static Widget createButton(BuildContext context, 
+                             String text, 
+                             Color color, 
+                             { 
+                               String path, 
+                               Function onPressed 
+                             }
+                            ) {
     return SizedBox(
       width: 225.0,
       child: OutlineButton(
@@ -153,14 +184,28 @@ class _CustomSwitchState extends State<_CustomSwitch> {
 class _CustomForm extends StatefulWidget {
   List<String> _textFieldNames;
   Map<String, Function> _validatorMap;
+  Function _onPressed;
+  List<int> _indexes;
   bool _useDotsOnLast;
   String _nameOfButton;
   Color _color;
   String _path;
 
-  _CustomForm(List<String> textFieldNames, Map<String, Function> validatorMap, String nameOfButton, { bool useDotsOnLast = false, Color color, String path = '/' }) {
+  _CustomForm(List<String> textFieldNames, 
+              Map<String, Function> validatorMap, 
+              String nameOfButton, 
+              { 
+                Function onPressed,
+                List<int> indexes,
+                bool useDotsOnLast = false, 
+                Color color, 
+                String path = '/' 
+              }
+             ) {
     this._textFieldNames = textFieldNames;
     this._validatorMap = validatorMap;
+    this._onPressed = onPressed;
+    this._indexes = indexes;
     this._useDotsOnLast = useDotsOnLast;
     this._nameOfButton = nameOfButton;
     this._color = color;
@@ -172,6 +217,8 @@ class _CustomForm extends StatefulWidget {
     return _CustomFormState(
       this._textFieldNames,
       this._validatorMap,
+      this._onPressed,
+      this._indexes,
       this._useDotsOnLast, 
       this._nameOfButton, 
       this._color, 
@@ -183,19 +230,37 @@ class _CustomForm extends StatefulWidget {
 class _CustomFormState extends State<_CustomForm> {
   final _formKey = GlobalKey<FormState>();
   List<String> _textFieldNames;
+  List<TextEditingController> _textControllers;
   Map<String, Function> _validatorMap;
+  Function _onPressed;
+  List<int> _indexes;
   bool _useDotsOnLast;
   String _nameOfButton;
   Color _color;
   String _path;
 
-  _CustomFormState(List<String> textFieldNames, Map<String, Function> validatorMap, bool useDotsOnLast, String nameOfButton, Color color, String path) {
+  _CustomFormState(List<String> textFieldNames, 
+                   Map<String, Function> validatorMap, 
+                   Function onPressed,
+                   List<int> indexes,
+                   bool useDotsOnLast, 
+                   String nameOfButton, 
+                   Color color, 
+                   String path
+                  ) {
     this._textFieldNames = textFieldNames;
+    this._textControllers = List();
     this._validatorMap = validatorMap;
+    this._onPressed = onPressed;
+    this._indexes = indexes;
     this._useDotsOnLast = useDotsOnLast;
     this._nameOfButton = nameOfButton;
     this._color = color;
     this._path = path;
+
+    for(int i = 0; i < textFieldNames.length; i++) {
+      this._textControllers.add(TextEditingController());
+    }
   }
 
   @override
@@ -209,6 +274,7 @@ class _CustomFormState extends State<_CustomForm> {
           isLast: i == this._textFieldNames.length - 1,
           showDots: i == this._textFieldNames.length - 1 && this._useDotsOnLast,
           validator: this._validatorMap.containsKey(name) ? this._validatorMap[name] : (text) => text.isEmpty ? 'Please Enter A ${this._textFieldNames.elementAt(i)}' : null,
+          controller: this._textControllers.elementAt(i),
         )
       );
     }
@@ -218,9 +284,19 @@ class _CustomFormState extends State<_CustomForm> {
         context, 
         this._nameOfButton, 
         this._color, 
-        onPressed: () {
+        onPressed: () async {
           if(_formKey.currentState.validate()) {
-            print('Valid');
+            if(this._indexes.length != 0) {
+              List<String> parameters = List();
+              for(int i = 0; i < this._indexes.length; i++) {
+                parameters.add(this._textControllers.elementAt(i).text.trim());
+              }
+
+              await this._onPressed(parameters);
+            } else {
+              await this._onPressed();
+            }
+            
             Navigator.of(context).pushNamed(_path);
           }
         }

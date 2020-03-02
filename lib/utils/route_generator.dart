@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:software_development/views/pages/home_page.dart';
-import 'package:software_development/views/pages/login_signup_page.dart';
-import 'package:software_development/views/pages/login_page.dart';
-import 'package:software_development/views/pages/settings_page.dart';
-import 'package:software_development/views/pages/signup_page.dart';
-import 'package:software_development/views/pages/account_page.dart';
+import 'package:software_development/pages/home_page.dart';
+import 'package:software_development/pages/login_signup_page.dart';
+import 'package:software_development/pages/login_page.dart';
+import 'package:software_development/pages/settings_page.dart';
+import 'package:software_development/pages/signup_page.dart';
+import 'package:software_development/pages/account_page.dart';
 
 class RouteGenerator {
 

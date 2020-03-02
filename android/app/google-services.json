@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "471400253698",
+    "firebase_url": "https://software-development-757f3.firebaseio.com",
+    "project_id": "software-development-757f3",
+    "storage_bucket": "software-development-757f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471400253698:android:986b8e501839334e239a1b",
+        "android_client_info": {
+          "package_name": "com.revan.software_development"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "471400253698-6k9ouub3o5efgm45nqaa1dup5ll7plh1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.revan.software_development",
+            "certificate_hash": "19be86044c0e702933e38e6015d184a9dfe33e12"
+          }
+        },
+        {
+          "client_id": "471400253698-170kb43g2jeo0dinvgoidlsidhfho00v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDNNZW1ybLzqh5NjqePgRaAEEnGXA6QMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471400253698-170kb43g2jeo0dinvgoidlsidhfho00v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
