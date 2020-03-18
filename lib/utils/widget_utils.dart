@@ -1,11 +1,23 @@
+import 'package:Software_Development/utils/custom_form.dart';
+import 'package:Software_Development/utils/custom_search_bar.dart';
+import 'package:Software_Development/utils/custom_stepper.dart';
+import 'package:Software_Development/utils/custom_switch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:software_development/utils/colors.dart';
+import 'package:Software_Development/utils/colors.dart';
 
 class WidgetUtils {
 
+  static Widget createStepper({ @required List<Widget> steps, @required int currentStep, @required bool autoCheckLast }) {
+    return CustomStepper(
+      steps: steps,
+      currentStep: currentStep,
+      autoCheckLast: autoCheckLast ?? false,
+    );
+  }
+
   static Widget createSwitch(String title) {
-    return _CustomSwitch(title);
+    return CustomSwitch(title: title);
   }
 
   static Future createYesOrNoDialog(BuildContext context,
@@ -21,7 +33,7 @@ class WidgetUtils {
         actions: <Widget>[
           FlatButton(
             child: Text('Yes'),
-            onPressed: onConfirmation != null ? onConfirmation : () => Navigator.of(context).pop(),
+            onPressed: onConfirmation ?? () => Navigator.of(context).pop(),
           ),
           FlatButton(
             child: Text('No'),
@@ -43,14 +55,14 @@ class WidgetUtils {
                              path = '/'
                            }
                           ) {
-    return _CustomForm(
-      textFieldNames,
-      validatorMap != null ? validatorMap : Map<String, Function>(),
-      nameOfButton,
-      onPressed: onPressed != null ? onPressed : (map) => Future.value(null),
-      indexes: indexes != null ? indexes : List(),
+    return CustomForm(
+      textFieldNames: textFieldNames,
+      validatorMap: validatorMap ?? Map<String, Function>(),
+      nameOfButton: nameOfButton,
+      onPressed: onPressed ?? (context) => Future.value(null),
+      indexes: indexes ?? List(),
       useDotsOnLast: useDotsOnLast, 
-      color: color == null ? colors['Dark Gray'] : color, 
+      color: color ?? colors['Dark Gray'], 
       path: path
     );
   }
@@ -79,12 +91,138 @@ class WidgetUtils {
             helperStyle: TextStyle(fontSize: 14.0),
           ),
           cursorColor: colors['Dark Gray'],
-          style: TextStyle(fontSize: 20.0),
+          style: TextStyle(fontSize: 16.0),
           validator: validator,
           obscureText: showDots,
           controller: controller,
         ),
       ),
+    );
+  }
+
+  static Widget createRestaurantCard(String name, double rating, { String imageLocation, @required void Function(bool) onPressed }) {
+    if(imageLocation == null) {
+      return ChoiceChip(
+        backgroundColor: Colors.grey[50],
+        labelPadding: EdgeInsets.only(left: 5.0),
+        selected: false,
+        onSelected: onPressed,
+        elevation: 1.3,
+        avatar: CircleAvatar(
+          backgroundColor: Colors.grey[50],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Icon(
+                Icons.star,
+                color: Colors.yellow,
+                size: 10.0
+              ),
+              Text(
+                '$rating',
+                style: TextStyle(
+                  fontSize: 10.0,
+                  color: colors['Purple'],
+                ),
+              )
+            ],
+          ),
+        ),
+        label: Text(
+          name,
+          style: TextStyle(
+            color: colors['Purple'],
+            fontSize: 14.0,
+          ),
+        ),
+      );  
+    } else {
+      return GestureDetector(
+        onTap: () => onPressed(true),
+        child: Card(
+          elevation: 1.3,
+          color: Colors.grey[50],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(21.0)
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(21.0), topRight: Radius.circular(21.0)),
+                  child: Image.asset(
+                    imageLocation,
+                    width: 200.0,
+                  ),
+                ),
+                Container(
+                  width: 200.0,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        name,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: colors['Purple'],
+                          fontSize: 14.0,
+                        ),
+                      ),
+                      RawChip(
+                        label: CircleAvatar(
+                          radius: 12.0,
+                          backgroundColor: Colors.grey[50],
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                                size: 10.0
+                              ),
+                              Text(
+                                '$rating',
+                                style: TextStyle(
+                                  fontSize: 10.0,
+                                  color: colors['Purple'],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        backgroundColor: Colors.grey[50],
+                        elevation: 1.3,
+                      ), 
+                    ]
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  static Widget createSearchBar({ @required String description, @required List<Map<String, dynamic>> list, @required String field, @required Widget content, List<Widget> actions, Widget bottomNavigation, void Function(String) onPressed }) {
+    return CustomSearchBar(
+      description: description,
+      list: list,
+      field: field,
+      content: content,
+      actions: actions,
+      bottomNavigation: bottomNavigation,
+      onPressed: onPressed,
+    );
+  }
+
+  static Widget createIconButton(BuildContext context, Icon icon, String path, { double iconSize = 24.0 }) {
+    return IconButton(
+      icon: icon,
+      iconSize: iconSize,
+      color: colors['Green'],
+      onPressed: () => Navigator.of(context).pushNamed('/$path'),
     );
   }
 
@@ -103,7 +241,7 @@ class WidgetUtils {
           text,
           style: TextStyle(color: color),
         ),
-        onPressed: onPressed != null ? onPressed : () => Navigator.of(context).pushNamed(path),
+        onPressed: onPressed ?? () => Navigator.of(context).pushNamed(path),
         borderSide: BorderSide(color: color),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         highlightedBorderColor: color,
@@ -116,196 +254,23 @@ class WidgetUtils {
       width: width,
       child: Row(
         children: <Widget>[
-          _createLine(),
+          createLine(),
           Text('or'),
-          _createLine(),
+          createLine(),
         ],
       ),
       margin: EdgeInsets.symmetric(vertical: margin),
     );
   }
 
-  static Widget _createLine() {
+  static Widget createLine([ double margin = 4.0 ]) {
     return Expanded(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        margin: EdgeInsets.symmetric(horizontal: margin),
         child: Divider(
           color: colors['Dark Gray'],
           thickness: 1.2,
         )
-      ),
-    );
-  }
-}
-
-class _CustomSwitch extends StatefulWidget {
-  String _title;
-
-  _CustomSwitch(String title) {
-    this._title = title;
-  }
-
-  @override
-  _CustomSwitchState createState() => _CustomSwitchState(this._title);
-}
-
-class _CustomSwitchState extends State<_CustomSwitch> {
-  String _title;
-  bool _isOn;
-
-  _CustomSwitchState(String title) {
-    this._title = title;
-    this._isOn = false;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MergeSemantics(
-      child: ListTile(
-        title: Text(this._title),
-        trailing: Transform.scale(
-          scale: 0.8,
-          child: CupertinoSwitch(
-            value: this._isOn,
-            onChanged: (value) {
-              // Update Shared Preferences
-              setState(() => this._isOn = value);
-            },
-            activeColor: colors['Green'],
-          ),
-        ),
-        onTap: () => setState(() => this._isOn = !this._isOn),
-        contentPadding: EdgeInsets.only(left: 20.0, right: 40.0),
-      ),
-    );
-  }
-}
-
-class _CustomForm extends StatefulWidget {
-  List<String> _textFieldNames;
-  Map<String, Function> _validatorMap;
-  Function _onPressed;
-  List<int> _indexes;
-  bool _useDotsOnLast;
-  String _nameOfButton;
-  Color _color;
-  String _path;
-
-  _CustomForm(List<String> textFieldNames, 
-              Map<String, Function> validatorMap, 
-              String nameOfButton, 
-              { 
-                Function onPressed,
-                List<int> indexes,
-                bool useDotsOnLast = false, 
-                Color color, 
-                String path = '/' 
-              }
-             ) {
-    this._textFieldNames = textFieldNames;
-    this._validatorMap = validatorMap;
-    this._onPressed = onPressed;
-    this._indexes = indexes;
-    this._useDotsOnLast = useDotsOnLast;
-    this._nameOfButton = nameOfButton;
-    this._color = color;
-    this._path = path;
-  }
-
-  @override
-  _CustomFormState createState() {
-    return _CustomFormState(
-      this._textFieldNames,
-      this._validatorMap,
-      this._onPressed,
-      this._indexes,
-      this._useDotsOnLast, 
-      this._nameOfButton, 
-      this._color, 
-      this._path
-    );
-  }
-}
-
-class _CustomFormState extends State<_CustomForm> {
-  final _formKey = GlobalKey<FormState>();
-  List<String> _textFieldNames;
-  List<TextEditingController> _textControllers;
-  Map<String, Function> _validatorMap;
-  Function _onPressed;
-  List<int> _indexes;
-  bool _useDotsOnLast;
-  String _nameOfButton;
-  Color _color;
-  String _path;
-
-  _CustomFormState(List<String> textFieldNames, 
-                   Map<String, Function> validatorMap, 
-                   Function onPressed,
-                   List<int> indexes,
-                   bool useDotsOnLast, 
-                   String nameOfButton, 
-                   Color color, 
-                   String path
-                  ) {
-    this._textFieldNames = textFieldNames;
-    this._textControllers = List();
-    this._validatorMap = validatorMap;
-    this._onPressed = onPressed;
-    this._indexes = indexes;
-    this._useDotsOnLast = useDotsOnLast;
-    this._nameOfButton = nameOfButton;
-    this._color = color;
-    this._path = path;
-
-    for(int i = 0; i < textFieldNames.length; i++) {
-      this._textControllers.add(TextEditingController());
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> children = new List<Widget>();
-    for(int i = 0; i < this._textFieldNames.length; i++) {
-      String name = this._textFieldNames.elementAt(i);
-      children.add(
-        WidgetUtils.createTextField(
-          name,
-          isLast: i == this._textFieldNames.length - 1,
-          showDots: i == this._textFieldNames.length - 1 && this._useDotsOnLast,
-          validator: this._validatorMap.containsKey(name) ? this._validatorMap[name] : (text) => text.isEmpty ? 'Please Enter A ${this._textFieldNames.elementAt(i)}' : null,
-          controller: this._textControllers.elementAt(i),
-        )
-      );
-    }
-
-    children.add(
-      WidgetUtils.createButton(
-        context, 
-        this._nameOfButton, 
-        this._color, 
-        onPressed: () async {
-          if(_formKey.currentState.validate()) {
-            if(this._indexes.length != 0) {
-              List<String> parameters = List();
-              for(int i = 0; i < this._indexes.length; i++) {
-                parameters.add(this._textControllers.elementAt(i).text.trim());
-              }
-
-              await this._onPressed(parameters);
-            } else {
-              await this._onPressed();
-            }
-            
-            Navigator.of(context).pushNamed(_path);
-          }
-        }
-      )
-    );
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: children,
       ),
     );
   }

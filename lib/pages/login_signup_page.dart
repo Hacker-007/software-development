@@ -1,6 +1,7 @@
+import 'package:Software_Development/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:software_development/utils/colors.dart';
-import 'package:software_development/utils/widget_utils.dart';
+import 'package:Software_Development/utils/colors.dart';
+import 'package:Software_Development/utils/widget_utils.dart';
 
 class LoginSignUpPage extends StatelessWidget {
 
@@ -30,9 +31,26 @@ class LoginSignUpPage extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        WidgetUtils.createButton(context, 'Login', colors['Dark Gray'], path: '/login'),
+        WidgetUtils.createButton(
+          context,
+          'Login', 
+          colors['Dark Gray'],
+          onPressed: () async {
+            Map<String, dynamic> user = await authService.getRememberedUser();
+            if(user.length != 0) {
+              Navigator.of(context).pushNamed('/');
+            } else {
+              Navigator.of(context).pushNamed('/login');
+            }
+          }
+        ),
         WidgetUtils.createLineSeparator(),
-        WidgetUtils.createButton(context, 'Sign Up', colors['Dark Gray'], path: '/signup'),
+        WidgetUtils.createButton(
+          context,
+          'Sign Up',
+          colors['Dark Gray'],
+          path: '/signup'
+        ),
       ]
     );
   }

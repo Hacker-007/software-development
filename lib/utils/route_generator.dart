@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:software_development/pages/home_page.dart';
-import 'package:software_development/pages/login_signup_page.dart';
-import 'package:software_development/pages/login_page.dart';
-import 'package:software_development/pages/settings_page.dart';
-import 'package:software_development/pages/signup_page.dart';
-import 'package:software_development/pages/account_page.dart';
+import 'package:Software_Development/pages/home_page.dart';
+import 'package:Software_Development/pages/login_signup_page.dart';
+import 'package:Software_Development/pages/login_page.dart';
+import 'package:Software_Development/pages/settings_page.dart';
+import 'package:Software_Development/pages/signup_page.dart';
+import 'package:Software_Development/pages/account_page.dart';
+import 'package:Software_Development/pages/trip_page.dart';
 
 class RouteGenerator {
 
@@ -18,6 +19,24 @@ class RouteGenerator {
       case '/signup': return MaterialPageRoute(builder: (_) => SignUpPage());
       case '/account': return MaterialPageRoute(builder: (_) => AccountPage());
       case '/settings': return MaterialPageRoute(builder: (_) => SettingsPage());
+      case '/trip': {
+        if(settings.arguments != null) {
+          return MaterialPageRoute(
+            builder: (_) => TripPage(
+              currentStep: ((settings.arguments as Map<String, dynamic>)['currentStep']) ?? 0,
+              restaurantSelected: ((settings.arguments as Map<String, dynamic>)['restaurantSelected'] as Map<String, dynamic>) ?? {},
+            ),
+          );
+        } else {
+          return MaterialPageRoute(
+            builder: (_) => TripPage(
+              currentStep: 0,
+              restaurantSelected: {},
+            ),
+          );
+        }
+      }
+      break;
       default: return _errorRoute();
     }
   }
